@@ -1,6 +1,8 @@
 import {FC} from 'react'
 import Head from "next/head";
 
+import { Navbar } from './../ui'
+
 
 interface ShopLayoutProps{
   title: string;
@@ -27,7 +29,7 @@ export const ShopLayout:FC<ShopLayoutProps> = ({children,pageDescription,title,i
 
       </Head>
       <nav>
-        {/* hacer el navbar */}
+        <Navbar />
       </nav>
       {/**  hacer el sidebar */}
       <main style={{
@@ -35,7 +37,7 @@ export const ShopLayout:FC<ShopLayoutProps> = ({children,pageDescription,title,i
         maxWidth:'1440px',
         padding:'0px 30px'
       }}>
-        {children}
+      {children}
       </main>
 
       <footer>
