@@ -1,2 +1,5 @@
-import * from './ProductCard';
-import * from './ProductList';
+
+export  * from './ProductCard';
+export * from './ProductList';
+export * from './ProductSlideShow';
+export * from './SizeSelectors';
