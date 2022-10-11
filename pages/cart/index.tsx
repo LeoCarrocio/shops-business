@@ -1,6 +1,6 @@
 import React from 'react';
 import { ShopLayout } from '../../components/layout';
-import {CartList} from '../../components/cart'
+import {CartList, OrderSummary} from '../../components/cart'
 import { Box, Typography, Grid, Card, CardContent, Divider, Button} from '@mui/material';
 
 const CartPage = () => {
@@ -10,15 +10,17 @@ const CartPage = () => {
       <Typography variant="h1" component='h1'> CARRITO </Typography>
       <Grid container>
         <Grid item xs={12} sm={7}>
-          <CartList />
+          <CartList editable/>
         </Grid>
         <Grid item xs={12} sm={5}>
           <Card className='sumary-card'>
             <CardContent>
               <Typography variant='h2'>Orden</Typography>
-              <Divider sx={{my:1}}/>
 
-              { /* Orden Sumary => falta haer  */}
+              <Divider sx={{my:1}}/>
+              
+              <OrderSummary/>
+              
               <Box sx={{mt:3}}>
                 <Button color="secondary" className='circular-btn' fullWidth>
                   Chackout

@@ -3,6 +3,7 @@ import { initialData } from "../../database/products"
 import { Typography, Grid, Link, CardActionArea, CardMedia, Box, Button } from "@mui/material"
 import NextLink from 'next/link';
 import { ItemCounter } from "../ui";
+import {FC} from 'react'
 
 
 
@@ -12,7 +13,11 @@ const ProductInCard = [
   initialData.products[10]
 ]
 
-export const CartList = () => {
+interface CartListProps {
+  editable?: boolean
+}
+
+export const CartList:FC<CartListProps> = ({editable = false}) => {
   return (
     <>
       {
@@ -41,20 +46,22 @@ export const CartList = () => {
                 <Typography variant='body1'>{product.title}</Typography>
                 <Typography variant='body1'> Talla: <strong>M</strong></Typography>
 
-                { /* considcional  si es editable  */}
+                {
+                  editable ?  <ItemCounter /> :  <Typography variant='body1'>3</Typography>
+                }
 
-                <ItemCounter />
               </Box>
             </Grid>
 
 
             <Grid item xs={2} display="flex" alignItems='center' flexDirection='column'> 
               <Typography variant='subtitle1'>$ {product.price}</Typography>
-              { /* considcional  si es editable  */}
+              {
+                editable &&  <Button variant='text' color='secondary'>
+                  Remover
+                </Button>
 
-              <Button variant='text' color='secondary'>
-                Remover
-              </Button>
+              }
 
             </Grid>
 
