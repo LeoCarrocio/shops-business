@@ -37,7 +37,7 @@ const productSchema = new Schema({
     timestamps: true
 });
 
-
+//creo un indice 
 productSchema.index({ title: 'text', tags: 'text' });
 
 
