@@ -4,8 +4,6 @@ import { AddCircleOutline, RemoveCircleOutline } from '@mui/icons-material'
 
 
 interface itemCounterProps{
-
-
 }
 
 export const ItemCounter:FC<itemCounterProps> = () => {

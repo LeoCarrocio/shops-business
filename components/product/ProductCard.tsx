@@ -11,12 +11,11 @@ interface ProductCardProps{
 export const ProductCard:FC<ProductCardProps> = ({product}) => {
 
   const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [isImageLoading, setImageLoading] = useState<boolean>(false)
 
   const ProductImage = useMemo(() =>{
     return isHovered ? `products/${product.images[0]}`: `products/${product.images[1]}`
   },[isHovered, product.images])
-
-
 
   return (
     <Grid item xs={6} sm={4} 
@@ -32,13 +31,14 @@ export const ProductCard:FC<ProductCardProps> = ({product}) => {
             component='img'
             image={ProductImage}
             alt={product.title}
+            onLoad ={ () => setImageLoading(true)}
             >
           </CardMedia>
         </CardActionArea>
-        </Link>
+        </Link> 
       </NextLink>
     </Card>
-      <Box sx={{mt:1}} className='fadeIn'>
+      <Box sx={{mt:1, display:isImageLoading ? 'block':'none' }} className='fadeIn'>
         <Typography fontWeight={700}>{product.title} </Typography>
         <Typography fontWeight={400}>$ {product.price} </Typography>
       </Box>
