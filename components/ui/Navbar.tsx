@@ -1,11 +1,17 @@
+import {useContext} from 'react';
 import NextLink from 'next/link';
+import {UiContext} from '../../context'
 
 import { AppBar, Link, Toolbar, Typography, Box, Button, IconButton, Badge } from '@mui/material';
 import { SearchOutlined, ShoppingCart } from '@mui/icons-material';
-
+import { useRouter } from 'next/router';
 
 
 export const Navbar = () => {
+
+  const {asPath} = useRouter();
+  const { toggleSlideMenu } = useContext(UiContext);
+
   return (
     <AppBar>
       <Toolbar>
@@ -20,17 +26,17 @@ export const Navbar = () => {
           <Box  sx={{display:{xs:'none', sm:'block'}}}>
             <NextLink href='/category/men' passHref>
               <Link>
-                <Button> Hombres </Button>
+                <Button color={asPath === '/category/men'? 'primary':'info'}> Hombres </Button>
               </Link>
             </NextLink>
             <NextLink href='/category/women' passHref>
               <Link>
-                <Button> Mujeres </Button>
+                <Button color={asPath === '/category/women'? 'primary':'info'}> Mujeres </Button>
               </Link>
             </NextLink>
             <NextLink href='/category/kids' passHref>
               <Link>
-                <Button> Niños </Button>
+                <Button color={asPath === '/category/women'? 'primary':'info'}> Niños </Button>
               </Link>
             </NextLink>
           </Box>
@@ -50,11 +56,9 @@ export const Navbar = () => {
               </IconButton>
             </Link>
           </NextLink>
-          <NextLink href='/' passHref>
-            <Link>
-              <Typography sx={{ml:0.5}}> MENU </Typography>
-            </Link>
-          </NextLink>
+          <Button onClick={toggleSlideMenu}>
+            Manu
+          </Button>
 
 
       </Toolbar>
