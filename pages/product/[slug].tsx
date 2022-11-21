@@ -1,22 +1,36 @@
 import { FC } from 'react';
 import { ShopLayout } from "../../components/layout"
 import {ItemCounter} from '../../components/ui'
-import { IProduct } from './../../interfaces'
+import { IProduct } from '../../interfaces'
 
 import { initialData } from '../../database/products';
 import { Box, Button, Grid, Typography, Chip } from '@mui/material';
 import { ProductSlideShow } from '../../components/product/ProductSlideShow';
 import { SizeSelectors } from '../../components/product';
+import { useRouter } from 'next/router';
+import { useProducts } from '../../hooks';
+import { NextPage,GetServerSideProps } from 'next';
+import { dbProducts } from '../../database';
 
 
-const product = initialData.products[0]
-/*
-interface ShopLayoutProps{
+//const product = initialData.products[0]
+
+interface ProductPageProps{
   product: IProduct
 }
-*/
  
-const ProductPage:FC = () => {
+const ProductPage:NextPage<ProductPageProps> = ({product}) => {
+
+  // Esta es una forma de hacerlo q no seria la mas optima, ya q llmaria muchas veses x cada producto al back
+  // y no estariamos aprovechando las vondades de next, y el promebla q google crom no lee esto y no tenemos el seo para los motores de google 
+  // const router = useRouter();
+  // const { product: IProduct, isLoading, isError } = useProducts(`/products/${router.query.slug}`)
+  // si loading en treu, me mostriaria cargando .... osea espera para cargar y POR ESOS AL PRINCIPIO TRAERIA MUCHOS ERRORE  
+  // if(isLoading){
+  //   return <h1> CARGANDO ... </h1>
+  // }
+
+
   return (
     <ShopLayout title={product.title} pageDescription={product.description}>
 
@@ -67,5 +81,32 @@ const ProductPage:FC = () => {
 
   )
 }
+
+//esta vercion la hacemos con  getServerSideProps, que lo llama del lado del servidor y no del lado del cliente
+//import { GetServerSideProps } from 'next';
+
+export const getServerSideProps : GetServerSideProps = async({params}) =>{
+
+  const {slug} = params as {slug:string};
+  const product = await dbProducts.getProductsBySlug(slug);
+
+  if(!product){
+    return{
+      redirect:{
+        destination:'/',
+        permanent:false
+      }
+    }
+  }
+
+  return{ 
+    props:{
+      product
+    }
+  }
+}
+
+
+
 
 export default ProductPage
