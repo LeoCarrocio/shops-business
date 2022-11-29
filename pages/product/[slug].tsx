@@ -1,4 +1,6 @@
 import { FC } from 'react';
+import { NextPage,GetServerSideProps,GetStaticPaths, GetStaticProps } from 'next';
+
 import { ShopLayout } from "../../components/layout"
 import {ItemCounter} from '../../components/ui'
 import { IProduct } from '../../interfaces'
@@ -9,7 +11,6 @@ import { ProductSlideShow } from '../../components/product/ProductSlideShow';
 import { SizeSelectors } from '../../components/product';
 import { useRouter } from 'next/router';
 import { useProducts } from '../../hooks';
-import { NextPage,GetServerSideProps } from 'next';
 import { dbProducts } from '../../database';
 
 
@@ -85,6 +86,8 @@ const ProductPage:NextPage<ProductPageProps> = ({product}) => {
 //esta vercion la hacemos con  getServerSideProps, que lo llama del lado del servidor y no del lado del cliente
 //import { GetServerSideProps } from 'next';
 
+
+/* tampoco la vamos a usar porque me busca todos los datos de la de pagina y no queremos eso, sino q se genera la pagina en cada build , y q solo se actualice x dia o semana o cuanod se lo solicite 
 export const getServerSideProps : GetServerSideProps = async({params}) =>{
 
   const {slug} = params as {slug:string};
@@ -98,14 +101,54 @@ export const getServerSideProps : GetServerSideProps = async({params}) =>{
       }
     }
   }
-
   return{ 
     props:{
       product
     }
   }
 }
+*/
 
+
+// la solucion es generarlo de manera estatica 
+
+
+export const getStaticPaths: GetStaticPaths = async (ctx) =>{
+  
+  const productSlugs = await dbProducts.getAllProductSlugs();
+
+  return{
+    paths: productSlugs.map(({slug})=>({
+      params:{
+        slug
+      }
+    })),
+    fallback: 'blocking'
+  }
+}
+
+export const getStaticProps : GetStaticProps = async ({params}) =>{
+
+  const {slug = '' } = params as {slug: string }  
+
+  const product = await dbProducts.getProductsBySlug(slug);
+
+  if(!product){
+    return{
+      redirect:{
+        destination:'/', 
+        permanent:false
+      }
+    }
+  }
+
+  return {
+    props:{
+      product
+    },
+    revalidate: 60 * 60 * 24
+  }
+}
 
 
 
