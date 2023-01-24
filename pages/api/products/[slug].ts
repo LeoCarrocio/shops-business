@@ -19,7 +19,7 @@ export default function handler( req: NextApiRequest, res: NextApiResponse<Data>
 
 
 const getProduct = async (req: NextApiRequest, res: NextApiResponse<Data>) =>{
-
+//(VIDEO 208)
 
   const { slug } = req.query;
   

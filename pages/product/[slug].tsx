@@ -23,7 +23,7 @@ interface ProductPageProps{
 const ProductPage:NextPage<ProductPageProps> = ({product}) => {
 
   // Esta es una forma de hacerlo q no seria la mas optima, ya q llmaria muchas veses x cada producto al back
-  // y no estariamos aprovechando las vondades de next, y el promebla q google crom no lee esto y no tenemos el seo para los motores de google 
+  // y no estariamos aprovechando las vondades de next, y el promebla q google crom no lee esto y no tenemos el seo para los motores de google  (VIDEO 225)
   // const router = useRouter();
   // const { product: IProduct, isLoading, isError } = useProducts(`/products/${router.query.slug}`)
   // si loading en treu, me mostriaria cargando .... osea espera para cargar y POR ESOS AL PRINCIPIO TRAERIA MUCHOS ERRORE  
@@ -84,7 +84,7 @@ const ProductPage:NextPage<ProductPageProps> = ({product}) => {
 }
 
 //esta vercion la hacemos con  getServerSideProps, que lo llama del lado del servidor y no del lado del cliente
-//import { GetServerSideProps } from 'next';
+//import { GetServerSideProps } from 'next'; (VIDEO 227)
 
 
 /* tampoco la vamos a usar porque me busca todos los datos de la de pagina y no queremos eso, sino q se genera la pagina en cada build , y q solo se actualice x dia o semana o cuanod se lo solicite 
@@ -110,7 +110,7 @@ export const getServerSideProps : GetServerSideProps = async({params}) =>{
 */
 
 
-// la solucion es generarlo de manera estatica 
+// la solucion es generarlo de manera estatica (VIDEO 228)
 
 
 export const getStaticPaths: GetStaticPaths = async (ctx) =>{

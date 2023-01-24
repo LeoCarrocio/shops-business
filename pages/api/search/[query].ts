@@ -34,7 +34,7 @@ const searchProduct = async (req: NextApiRequest, res: NextApiResponse<Data>) =>
   await db.connect()
   const products = await Product.find({
 
-    $text : { $search: query } // mando mi busqueda de varios indices, fijarme en el modelo q se llaman text y con eso vincula las columnas donde deve hacer la busqueda 
+    $text : { $search: query } // mando mi busqueda de varios indices, fijarme en el modelo q se llaman text y con eso vincula las columnas donde deve hacer la busqueda (VIDEO 209)
   
   })
   .select('title images price inStock slug -_id')
