@@ -14,13 +14,12 @@ export const SideMenu = () => {
     const [search, setSearch] = useState<string>('');
     
     const navigateTo = (url: string) => {
-        toggleSlideMenu()
+        toggleSlideMenu();
         router.push(url) 
     }
 
     const onSearch = () =>{
         if(search.trim().length === 0 ) return; 
-
         navigateTo(`/search/${search}`)
     }
 
@@ -38,6 +37,7 @@ export const SideMenu = () => {
 
                 <ListItem>
                     <Input
+                        autoFocus
                         value={search}
                         onChange ={(e)=>setSearch(e.target.value)} 
                         onKeyPress ={(e)=>e.key ==='Enter' && onSearch()}
