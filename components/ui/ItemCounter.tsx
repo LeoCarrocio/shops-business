@@ -4,17 +4,24 @@ import { AddCircleOutline, RemoveCircleOutline } from '@mui/icons-material'
 
 
 interface itemCounterProps{
+  currentValue: number;
+  updatedQuantity: (value:number) => void, 
+  maxValue: number,
 }
 
-export const ItemCounter:FC<itemCounterProps> = () => {
+export const ItemCounter:FC<itemCounterProps> = ({currentValue, updatedQuantity, maxValue}) => {
   return (
     <Box display='flex' alignItems='center'>
       <IconButton>
-        <RemoveCircleOutline />
+        <RemoveCircleOutline 
+          onClick={() => currentValue < maxValue &&  updatedQuantity(1) }
+        />
       </IconButton>
-        <Typography sx={{width:40, textAlign: 'center'}}>1</Typography>
+        <Typography sx={{width:40, textAlign: 'center'}}>{ currentValue < 0 ? 1 : currentValue }</Typography>
       <IconButton>
-        <AddCircleOutline />
+        <AddCircleOutline 
+        onClick={() => currentValue > 0 && updatedQuantity(-1)}
+        />
       </IconButton>
     </Box>
  

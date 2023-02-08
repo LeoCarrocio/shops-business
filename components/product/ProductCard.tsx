@@ -1,6 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 import NextLink from 'next/link';
-import { Typography, Grid, Card, CardActionArea, CardMedia,Box,Link } from '@mui/material';
+import { Typography, Grid, Card, CardActionArea, CardMedia,Box,Link, Chip } from '@mui/material';
 
 import{ IProduct } from './../../interfaces';
 
@@ -26,6 +26,16 @@ export const ProductCard:FC<ProductCardProps> = ({product}) => {
       <NextLink href={`/product/${product.slug}`} passHref prefetch={false}>
         <Link>
         <CardActionArea>
+          
+          {
+            product.inStock === 0 && 
+              <Chip
+                color='primary'
+                label='No hay productos'
+                sx={{ position: 'absolute', zIndex: 99, top: '10px', left: '10px'}}
+              />
+          }
+          
           <CardMedia 
             className="fadeIn"
             component='img'
