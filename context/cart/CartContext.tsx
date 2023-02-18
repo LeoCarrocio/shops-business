@@ -3,7 +3,16 @@ import { ICartProduct } from '../../interfaces';
 
 interface contextProps { 
   cart : ICartProduct[];
+  numberOfItems: number;
+  subTotal: number;
+  tax: number;
+  total: number;
+
+  // methods
+  addProductTocart: (product: ICartProduct) => void;
+  updateCartQuantity: (product: ICartProduct) => void;
+  removeCardProduct: (product: ICartProduct) => void;
 
 }
 
-export const CartContext = createContext({} as contextProps);
+export const CartContext = createContext({} as contextProps); 

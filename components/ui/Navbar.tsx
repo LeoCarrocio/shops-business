@@ -1,7 +1,7 @@
 import {useContext, useState} from 'react';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
-import {UiContext} from '../../context'
+import {UiContext, CartContext} from '../../context'
 
 import { AppBar, Link, Toolbar, Typography, Box, Button, IconButton, Badge, Input, InputAdornment } from '@mui/material';
 import { ClearOutlined, SearchOutlined, ShoppingCart } from '@mui/icons-material';
@@ -11,6 +11,8 @@ export const Navbar = () => {
 
   const {asPath, push } = useRouter();
   const { toggleSlideMenu } = useContext(UiContext);
+  const { numberOfItems } = useContext(CartContext);
+
 
   const [search, setSearch] = useState<string>('');
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
@@ -102,7 +104,7 @@ export const Navbar = () => {
           <NextLink href='/cart' passHref>
             <Link>
               <IconButton>
-                <Badge badgeContent={2} color='secondary'>
+                <Badge badgeContent={numberOfItems} color='secondary'>
                   <ShoppingCart/>
                 </Badge>
               </IconButton>

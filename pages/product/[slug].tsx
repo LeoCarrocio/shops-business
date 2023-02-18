@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useContext } from 'react';
 import { NextPage,GetServerSideProps,GetStaticPaths, GetStaticProps } from 'next';
 
 import { ShopLayout } from "../../components/layout"
@@ -12,6 +12,7 @@ import { SizeSelectors } from '../../components/product';
 import { useRouter } from 'next/router';
 import { useProducts } from '../../hooks';
 import { dbProducts } from '../../database';
+import { CartContext } from '../../context';
 
 
 //const product = initialData.products[0]
@@ -30,6 +31,9 @@ const ProductPage:NextPage<ProductPageProps> = ({product}) => {
   // if(isLoading){
   //   return <h1> CARGANDO ... </h1>
   // }
+
+  const router = useRouter();
+  const {addProductTocart} = useContext(CartContext);
 
   const [tempCartProduct, setTempCartProduct] = useState<ICartProduct>({
     _id: product._id,
@@ -61,7 +65,14 @@ const ProductPage:NextPage<ProductPageProps> = ({product}) => {
   
 
   const onAddProduct = () =>{
-    console.log(tempCartProduct)
+
+    if(!tempCartProduct.sizes) { return }
+
+    // llama a accion del context para agregar al carrito 
+
+    addProductTocart(tempCartProduct);
+
+    router.push('/cart');
   }
 
 
@@ -92,7 +103,7 @@ const ProductPage:NextPage<ProductPageProps> = ({product}) => {
               <ItemCounter
                 currentValue={tempCartProduct.quantity}
                 updatedQuantity={updateQuantity}
-                maxValue={product.inStock}
+                maxValue={product.inStock > 5 ? 5 : product.inStock}
               />
               
               <SizeSelectors 
