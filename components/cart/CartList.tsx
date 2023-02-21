@@ -1,5 +1,3 @@
-
-import { initialData } from "../../database/products"
 import { Typography, Grid, Link, CardActionArea, CardMedia, Box, Button } from "@mui/material"
 import NextLink from 'next/link';
 import { ItemCounter } from "../ui";
@@ -48,7 +46,6 @@ export const CartList:FC<CartListProps> = ({editable = false}) => {
               </NextLink>
             </Grid>
 
-
             <Grid item xs={7}> 
               <Box display="flex" flexDirection="column">
                 <Typography variant='body1'>{product.title}</Typography>
@@ -67,22 +64,15 @@ export const CartList:FC<CartListProps> = ({editable = false}) => {
               </Box>
             </Grid>
 
-
             <Grid item xs={2} display="flex" alignItems='center' flexDirection='column'> 
               <Typography variant='subtitle1'>$ {product.price}</Typography>
               {
                 editable && <Button variant='text' color='secondary' onClick={ () => removeCardProduct(product)}>
                   Remover
                 </Button>
-
               }
-
             </Grid>
-
           </Grid>
- 
-
-
         ))
       } 
 
