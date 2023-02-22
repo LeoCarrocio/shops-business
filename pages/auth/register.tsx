@@ -1,38 +1,104 @@
-import { Box, Button, Grid, TextField, Typography, Link } from '@mui/material'
-import React from 'react'
+import { Box, Button, Grid, TextField, Typography, Link, Chip } from '@mui/material'
+import React, { useContext, useState } from 'react'
 import { AuthLayout } from '../../components/layout'
 import NextLink from 'next/link'
+import { useForm } from 'react-hook-form'
+import { validation } from '../../utils'
+import tesloApi from '../../api/tesloApi';
+import { ErrorOutline } from '@mui/icons-material'
+import { useRouter } from 'next/router'
+import { AuthContext } from '../../context'
+
+
+type FormData = {
+  name: string,
+  email: string,
+  password: string
+}
 
 
 const RegisterPage = () => {
+
+  const router = useRouter();
+  const { registerUser } = useContext(AuthContext) 
+
+
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+  const [showError, setShowError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState< string >('');
+
+  const onRegisterPage = async({name, email, password}:FormData) => {
+
+    setShowError(false);
+
+    const {hasError, message} = await registerUser(name, password, email );
+
+    if(hasError) {
+      setShowError(true)
+      setErrorMessage(message!);
+      setTimeout(()=> setShowError(false) ,4000)
+    
+      return;
+    }
+
+    router.replace('/');
+
+  }
+
+
   return (
     <AuthLayout title='Login'>
+      <form onSubmit={handleSubmit(onRegisterPage)}>
       <Box sx={{width:350, padding:'10px 20px'}}>
-        <Grid container spacing={2}>
+        <Grid container spacing={2}> 
           <Grid item xs={12}>
             <Typography variant='h1' component='h1'> Crear  Usuario</Typography>
+            <Chip 
+                label='No se reconoce usuario y/o contraseña'
+                color='error'
+                icon={<ErrorOutline />}
+                className='fedeIn'
+                sx={{ display: showError ? 'flex' : 'none'}}
+              />
           </Grid>
 
           <Grid item xs={12}>
-            <TextField label="Nombre" variant='filled' fullWidth/>
+            <TextField label="Nombre " variant='filled' fullWidth
+              { ...register('name',{
+                required: 'Este campo es requerido',
+                minLength: {value: 2 , message: 'Minimo 2 caracteres'}
+              })
+              }
+              error={!!errors.name}
+              helperText={errors.name?.message}
+            />
           </Grid>
           <Grid item xs={12}>
-            <TextField label="Apellido " variant='filled' fullWidth/>
-          </Grid>
-          <Grid item xs={12}>
-            <TextField label="correo" variant='filled' fullWidth/>
+            <TextField type='email' label="correo" variant='filled' 
+              fullWidth
+              {...register('email',{
+                required: 'Este campo es requerido',
+                validate: validation.isEmail,
+              })}
+              error={!!errors.email}
+              helperText={errors.email?.message}
+            />
           </Grid>
 
           <Grid item xs={12}>
-            <TextField label="contraseña" type='password' variant='filled' fullWidth/>
+            <TextField label="contraseña" type='password' variant='filled' fullWidth
+              {...register('password',
+              { 
+                required:'Este campo es requerido',
+                minLength:{value:6 , message:'Minino seis caracteres'}                          
+              })}
+              error={!!errors.password}
+              helperText={errors.password?.message}
+            />
           </Grid>
 
           <Grid item xs={12}>
-            <TextField label="repita contraseña" type='password' variant='filled' fullWidth/>
-          </Grid>
-
-          <Grid item xs={12}>
-            <Button color='secondary' className='circular-btn' size='large' fullWidth>
+            <Button type='submit' color='secondary' className='circular-btn' size='large' fullWidth>
               Autenticar  
             </Button>
           </Grid>
@@ -47,6 +113,8 @@ const RegisterPage = () => {
           </Grid>
         </Grid>
       </Box>
+      </form>
+
     </AuthLayout>
   )
 }

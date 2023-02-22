@@ -5,7 +5,6 @@ import { ShopLayout } from "../../components/layout"
 import {ItemCounter} from '../../components/ui'
 import { ICartProduct, IProduct, ISize } from '../../interfaces'
 
-import { initialData } from '../../database/products';
 import { Box, Button, Grid, Typography, Chip } from '@mui/material';
 import { ProductSlideShow } from '../../components/product/ProductSlideShow';
 import { SizeSelectors } from '../../components/product';
