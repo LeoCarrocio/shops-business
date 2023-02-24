@@ -7,6 +7,7 @@ interface contextProps {
   subTotal: number;
   tax: number;
   total: number;
+  isLoaded: boolean;
 
   // methods
   addProductTocart: (product: ICartProduct) => void;

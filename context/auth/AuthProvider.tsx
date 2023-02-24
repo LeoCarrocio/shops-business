@@ -4,6 +4,7 @@ import {AuthContext, authReducer} from './';
 import { IUser } from '../../interfaces';
 import { tesloApi } from '../../api';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 
 interface Props { 
   children: ReactNode
@@ -26,6 +27,7 @@ const AUTH_INITIAL_STATE : AuthState = {
 export const AuthProvider:FC<Props> = ({children}) =>{
 
   const [state, dispatch] = useReducer( authReducer, AUTH_INITIAL_STATE );
+  const router = useRouter();
 
 
   useEffect(()=>{
@@ -36,6 +38,10 @@ export const AuthProvider:FC<Props> = ({children}) =>{
 
 
   const checkToken = async () =>{
+
+    if(!Cookie.get('token')){
+      return;
+    }
 
     try {
       const { data } = await tesloApi.get('/user/validate-token') // como las cookies viajan por el pedido de axios , no hace falta mandarlos
@@ -100,13 +106,24 @@ export const AuthProvider:FC<Props> = ({children}) =>{
   }
 
 
+  const logout = () =>{
+
+    Cookie.remove('token');
+    Cookie.remove('cart');
+
+    router.reload(); // refreso la pagina y pierdo mi token y carrito 
+
+  }
+
+
   return (
     <AuthContext.Provider value={{
       ...state,
       // METHODS
 
       loginUser,
-      registerUser
+      registerUser,
+      logout
     
     }
     } >

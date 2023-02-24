@@ -4,7 +4,6 @@ import { AuthLayout } from '../../components/layout'
 import NextLink from 'next/link'
 import { useForm } from 'react-hook-form'
 import { validation } from '../../utils'
-import { tesloApi } from '../../api'
 import { ErrorOutline } from '@mui/icons-material'
 import { useState } from 'react';
 import { AuthContext } from '../../context'
@@ -37,7 +36,9 @@ const LoginPage = () => {
       return;
     }
 
-    router.replace('/');
+    const destinations = router.query.p?.toString() || '/'
+
+    router.replace(destinations);
 
   }
 
@@ -97,7 +98,10 @@ const LoginPage = () => {
 
 
           <Grid item xs={12} display='flex' justifyContent='end'>
-            <NextLink href='/auth/register' passHref>
+            <NextLink 
+              href={ router.query.p ? `/auth/register?p=${router.query.p}` : '`/auth/register' }
+              passHref
+            >
               <Link underline="always">
                 ¿No tienes cuenta?
               </Link>

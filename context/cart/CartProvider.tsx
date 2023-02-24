@@ -8,7 +8,8 @@ interface Props {
 }
 
 export interface CartState {
-  cart: ICartProduct[]
+  isLoaded: boolean;
+  cart: ICartProduct[];
   numberOfItems: number;
   subTotal: number;
   tax: number;
@@ -16,6 +17,7 @@ export interface CartState {
 }
 
 const CART_INITIAL_STATE : CartState = {
+  isLoaded: false,
   cart: [],
   numberOfItems:0,
   subTotal:0,

@@ -2,8 +2,28 @@ import React from 'react';
 import { ShopLayout } from '../../components/layout';
 import {CartList, OrderSummary} from '../../components/cart'
 import { Box, Typography, Grid, Card, CardContent, Divider, Button} from '@mui/material';
+import { useContext, useEffect } from 'react';
+import { CartContext } from '../../context';
+import { useRouter } from 'next/router';
 
 const CartPage = () => {
+
+  const {isLoaded, cart} = useContext(CartContext);
+  const router = useRouter();
+
+  useEffect(()=>{
+    if( isLoaded && cart.length === 0 ){ // lo saco de la oagina de carrito xq no tiene productos cargados 
+      router.replace('/cart/empty') // el .raplace remplaza la ruta y no gurda donde esta actualmente  
+    }
+
+  },[isLoaded, cart, router])
+
+
+  if(!isLoaded || cart.length === 0 ){ // como se ve algo del carrito pero es infimo, con esta condicion lo evitamos 
+    return <></>
+  }
+
+
   return (
 
     <ShopLayout title={'Carrito - 3 -  '} pageDescription={'Carrito de compras de la tienda'} >
