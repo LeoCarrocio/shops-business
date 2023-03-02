@@ -7,6 +7,7 @@ export const signToken = (_id:string, email:string) => {
     throw new Error('No hay semilla JWT - revisar variables de entorno ');
   }
 
+
   return jwt.sign(
     // payload
     { _id, email},
@@ -23,6 +24,11 @@ export const isValidToken = (token: string): Promise<string> => {
 
   if(!process.env.JWT_SECRET_SEED){
     throw new Error('No hay semilla JWT - revisar variables de entorno ');
+  }
+
+
+  if(token.length <= 10 ){
+    return Promise.reject('JWT no es valido')
   }
 
   return new Promise((resolve, reject) => {

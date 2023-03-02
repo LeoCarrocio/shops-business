@@ -16,7 +16,6 @@ type FormData = {
   password: string
 }
 
-
 const RegisterPage = () => {
 
   const router = useRouter();

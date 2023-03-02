@@ -2,6 +2,7 @@ import {FC, useReducer,ReactNode, useEffect } from 'react';
 import Cookie from 'js-cookie';
 import { CartContext, cartReducer } from './';
 import { ICartProduct } from '../../interfaces';
+import Cookies from 'js-cookie';
 
 interface Props { 
   children: ReactNode
@@ -14,6 +15,19 @@ export interface CartState {
   subTotal: number;
   tax: number;
   total: number;
+
+  shippinAddress?: ShippinAddres;
+}
+
+export interface ShippinAddres {
+  firstName: string;
+  lastName: string;
+  address: string;
+  address2? : string;
+  zip: string;
+  city: string;
+  country: string;
+  phone: string;
 }
 
 const CART_INITIAL_STATE : CartState = {
@@ -23,7 +37,8 @@ const CART_INITIAL_STATE : CartState = {
   subTotal:0,
   tax:0,
   total:0,
-  
+
+  shippinAddress: undefined
 }
 
 export const CartProvider:FC<Props> = ({children}) =>{
@@ -68,6 +83,26 @@ export const CartProvider:FC<Props> = ({children}) =>{
 
   },[state.cart])
 
+
+  useEffect(()=>{
+
+    if( Cookies.get('firstName')){
+      
+      const shippingAddress = {
+        firstName: Cookies.get('firstName') || '',
+        lastName: Cookies.get('lastName') || '',
+        address: Cookies.get('address') || '',
+        address2: Cookies.get('address2') || '',
+        zip: Cookies.get('zip') || '',
+        city: Cookies.get('city') || '',
+        country: Cookies.get('country') || '',
+        phone: Cookies.get('phone') || '',
+      }
+  
+      dispatch({type:'[Cart] - LoadAddres from Cookies',payload: shippingAddress})
+    }
+  },[])
+
   
   const addProductTocart = (product: ICartProduct) =>{
     //nivel 1 
@@ -85,7 +120,6 @@ export const CartProvider:FC<Props> = ({children}) =>{
     // acumular
 
     const updatedProducts = state.cart.map( p =>{
-
       if(p._id !== product._id) return p;
       if(p.sizes !== product.sizes) return p;
 
@@ -106,6 +140,20 @@ export const CartProvider:FC<Props> = ({children}) =>{
     dispatch({ type: '[Cart] - Remove productin cart' , payload: product}); 
   }
 
+  const updateAddres = (data: ShippinAddres) =>{
+
+    Cookies.set('firstName',data.firstName);
+    Cookies.set('lastName',data.lastName);
+    Cookies.set('address',data.address);
+    Cookies.set('address2',data.address2 || '');
+    Cookies.set('zip',data.zip);
+    Cookies.set('city',data.city);
+    Cookies.set('country',data.country);
+    Cookies.set('phone',data.phone);
+
+    dispatch({type:'[Cart] - Update Addres' ,payload: data})
+  }
+
   
 
   
@@ -116,7 +164,8 @@ export const CartProvider:FC<Props> = ({children}) =>{
       // METHODS
       addProductTocart,
       updateCartQuantity,
-      removeCardProduct
+      removeCardProduct,
+      updateAddres,
     }
     } >
     {children}
