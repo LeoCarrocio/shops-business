@@ -1,12 +1,12 @@
 import { ICartProduct } from '../../interfaces'
-import { CartState, ShippinAddres } from './'
+import { CartState, ShippingAddres } from './'
 
 type CartActionType = | { type: '[Cart] - LoadCart cookies | storage', payload: ICartProduct[] }
 | { type: '[Cart] - Update products in cart', payload: ICartProduct[] }
 | { type: '[Cart] - Change cart quantity', payload: ICartProduct }
 | { type: '[Cart] - Remove productin cart', payload: ICartProduct }
-| { type: '[Cart] - LoadAddres from Cookies', payload:  ShippinAddres }
-| { type: '[Cart] - Update Addres', payload:  ShippinAddres }
+| { type: '[Cart] - LoadAddres from Cookies', payload:  ShippingAddres }
+| { type: '[Cart] - Update Addres', payload:  ShippingAddres }
 | { type: '[Cart] - Update order summary', 
     payload: {
       numberOfItems: number;

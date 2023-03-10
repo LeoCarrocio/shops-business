@@ -50,11 +50,9 @@ const CartPage = () => {
                 >
                   Chackout
                 </Button>
-
               </Box>
 
             </CardContent>
-
           </Card>
 
         </Grid>

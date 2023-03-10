@@ -16,7 +16,7 @@ export const ItemCounter:FC<itemCounterProps> = ({currentValue, updatedQuantity,
   const addOrRemove = (value:number) => {
 
     if(value === -1){
-      if( currentValue === -1) return;
+      if( currentValue === 1) return;
 
       return updatedQuantity(currentValue -1)
     }
@@ -34,7 +34,7 @@ export const ItemCounter:FC<itemCounterProps> = ({currentValue, updatedQuantity,
           onClick={() => addOrRemove(-1)}
         />
       </IconButton>
-        <Typography sx={{width:40, textAlign: 'center'}}>{ currentValue < 0 ? 1 : currentValue }</Typography>
+        <Typography sx={{width:40, textAlign: 'center'}}>{ currentValue }</Typography>
       <IconButton>
         <AddCircleOutline 
         onClick={() => addOrRemove(+1)}

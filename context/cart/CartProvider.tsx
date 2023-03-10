@@ -16,10 +16,10 @@ export interface CartState {
   tax: number;
   total: number;
 
-  shippinAddress?: ShippinAddres;
+  shippinAddress?: ShippingAddres;
 }
 
-export interface ShippinAddres {
+export interface ShippingAddres {
   firstName: string;
   lastName: string;
   address: string;
@@ -46,12 +46,11 @@ export const CartProvider:FC<Props> = ({children}) =>{
   const [state, dispatch] = useReducer( cartReducer, CART_INITIAL_STATE );
 
 
-
+  // cada useEffect se encarga de cada cosa 
+  // guarda las coquies los elemnts del carrito 
   useEffect(()=>{
-
     try {
-      const cookieProductsCart = Cookie.get('cart') ? JSON.parse(Cookie.get('cart')!) : [];
-      
+      const cookieProductsCart = Cookie.get('cart') ? JSON.parse(Cookie.get('cart')! )  : [] 
       dispatch({ type:'[Cart] - LoadCart cookies | storage' , payload: cookieProductsCart});
       
     } catch (error) {
@@ -59,33 +58,10 @@ export const CartProvider:FC<Props> = ({children}) =>{
     }
 
   }, [])
-// cada useEffect se encarga de cada cosa 
-// guarda las coquies los elemnts del carrito 
-  useEffect(()=>{
-    Cookie.set('cart', JSON.stringify(state.cart)); // se serealiza porque las cookies solo utiliza estring
-  },[state.cart])
-
-// se encarga de los valores del carrito del total a pagar 
-  useEffect(()=>{
-
-    const numberOfItems = state.cart.reduce((prev, current)=>current.quantity + prev, 0 );
-    const subTotal = state.cart.reduce((prev, current)=> (current.quantity * current.price) + prev, 0 );
-    const taxRate = Number(process.env.NEXT_PUBLIC_TAX_RATE || 0);
-
-    const orderSummary = {
-      numberOfItems,
-      subTotal,
-      tax: subTotal * taxRate,
-      total : subTotal * (taxRate + 1)
-    }
-
-    dispatch({type: '[Cart] - Update order summary', payload:orderSummary})
-
-  },[state.cart])
 
 
-  useEffect(()=>{
 
+useEffect(()=>{
     if( Cookies.get('firstName')){
       
       const shippingAddress = {
@@ -101,7 +77,33 @@ export const CartProvider:FC<Props> = ({children}) =>{
   
       dispatch({type:'[Cart] - LoadAddres from Cookies',payload: shippingAddress})
     }
-  },[])
+  },[]);
+
+
+  
+  useEffect(()=>{
+    
+    if (state.cart.length > 0) Cookie.set('cart', JSON.stringify(state.cart)); // se serealiza porque las cookies solo utiliza estring
+  },[state.cart]);
+
+
+
+  // se encarga de los valores del carrito del total a pagar 
+  useEffect(()=>{
+
+    const numberOfItems = state.cart.reduce((prev, current)=>current.quantity + prev, 0 );
+    const subTotal = state.cart.reduce((prev, current)=> (current.quantity * current.price) + prev, 0 );
+    const taxRate = Number(process.env.NEXT_PUBLIC_TAX_RATE || 0);
+
+    const orderSummary = {
+      numberOfItems,
+      subTotal,
+      tax: subTotal * taxRate,
+      total : subTotal * (taxRate + 1)
+    }
+    dispatch({type: '[Cart] - Update order summary', payload:orderSummary})
+
+  },[state.cart])
 
   
   const addProductTocart = (product: ICartProduct) =>{
@@ -140,7 +142,7 @@ export const CartProvider:FC<Props> = ({children}) =>{
     dispatch({ type: '[Cart] - Remove productin cart' , payload: product}); 
   }
 
-  const updateAddres = (data: ShippinAddres) =>{
+  const updateAddres = (data: ShippingAddres) =>{
 
     Cookies.set('firstName',data.firstName);
     Cookies.set('lastName',data.lastName);
@@ -154,9 +156,6 @@ export const CartProvider:FC<Props> = ({children}) =>{
     dispatch({type:'[Cart] - Update Addres' ,payload: data})
   }
 
-  
-
-  
 
   return (
     <CartContext.Provider value={{

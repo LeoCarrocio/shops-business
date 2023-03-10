@@ -1,5 +1,5 @@
 import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { ShopLayout } from '../../components/layout'
 import {countries} from './../../utils'
 
@@ -43,17 +43,31 @@ const AddressPage = () => {
   }
 
 
-  const { register ,handleSubmit, formState: { errors}} = useForm<FormData>({
-    defaultValues:getAddresFromCookie()
+  const { register ,handleSubmit, formState: { errors}, reset} = useForm<FormData>({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      address: '',
+      address2: '',
+      zip: '',
+      city: '',
+      country: countries[0].code,
+      phone: '',
+    } 
   });
+
+  useEffect(()=>{
+
+    reset(getAddresFromCookie())
+  },[reset])
+
+
   
 
   const onSubmitAddres = (data : FormData) =>{
 
     updateAddres(data);
-
     router.push('/checkout/summary')
-
   }
 
 
@@ -134,21 +148,22 @@ const AddressPage = () => {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth>
+          {/* <FormControl fullWidth> */}
             <InputLabel>Pais</InputLabel>
             <TextField
-              select
+              // select
               variant='filled'
-              defaultValue={ Cookies.get('country') || countries[0].code}
+              // defaultValue={ Cookies.get('country') || countries[0].code}
               {
                 ...register('country',{
                   required:'Este campo es requerido'
                 })
               }
               error={!!errors.country}
-              //helperText={errors.country?.message}
+              fullWidth
+              helperText={errors.country?.message}
             > 
-              {
+              {/* {
                 countries.map(country =>(
                   <MenuItem 
                   value={country.code}
@@ -157,9 +172,9 @@ const AddressPage = () => {
                     {country.name}
                   </MenuItem>
                 ))
-              }
+              } */}
             </TextField>
-          </FormControl>
+          {/* </FormControl> */}
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField 

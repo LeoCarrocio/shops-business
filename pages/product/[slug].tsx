@@ -53,11 +53,11 @@ const ProductPage:NextPage<ProductPageProps> = ({product}) => {
     }))
   }
 
-  const updateQuantity = (value:number) =>{
+  const updateQuantity = (quantity:number) =>{
     
     setTempCartProduct(currentProduct =>({
       ...currentProduct,
-      quantity: currentProduct.quantity + value
+      quantity
     }))
   }
 
@@ -65,7 +65,7 @@ const ProductPage:NextPage<ProductPageProps> = ({product}) => {
 
   const onAddProduct = () =>{
 
-    if(!tempCartProduct.sizes) { return }
+    if(!tempCartProduct.sizes) { return; }
 
     // llama a accion del context para agregar al carrito 
 

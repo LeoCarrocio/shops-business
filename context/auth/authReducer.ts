@@ -14,15 +14,15 @@ type AuthActionType =
       case'[Auth] - Login':
         return{
           ...state,
-          isLogin: true,
+          isLoggedIn: true,
           user: action.payload
         }
 
       case "[Auth] - Logout":
         return {
           ...state,
-          isLogin: false,
-          user:undefined
+          isLoggedIn: false,
+          user: undefined,
         }
     
         default:

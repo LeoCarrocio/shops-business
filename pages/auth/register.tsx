@@ -8,6 +8,8 @@ import tesloApi from '../../api/tesloApi';
 import { ErrorOutline } from '@mui/icons-material'
 import { useRouter } from 'next/router'
 import { AuthContext } from '../../context'
+import { getSession, signIn } from 'next-auth/react'
+import { GetServerSideProps } from 'next'
 
 
 type FormData = {
@@ -39,10 +41,12 @@ const RegisterPage = () => {
     
       return;
     }
+    // autenticacion personalizada 
+    // const destinations = router.query.p?.toString() || '/'; 
+    // router.replace(destinations);
 
-    const destinations = router.query.p?.toString() || '/'; 
+    await signIn('credentials',{email, password});
 
-    router.replace(destinations);
 
   }
 
@@ -107,7 +111,7 @@ const RegisterPage = () => {
 
           <Grid item xs={12} display='flex' justifyContent='end'>
             <NextLink 
-              href={ router.query.p ? `/auth/login?p=${router.query.p}` : '`/auth/login' } 
+              href={ router.query.p ? `/auth/login?p=${router.query.p}` : '/auth/login' } 
               passHref
             >
               <Link underline="always">
@@ -121,6 +125,27 @@ const RegisterPage = () => {
 
     </AuthLayout>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ req, query }) =>{
+
+  const session = await getSession({req});
+
+  const {p = '/'} = query; // de esta manera simpre va a ir a lapagina donde visito por ultima vez
+
+  if(session){
+    return{
+      redirect:{
+        destination: p.toString() ,
+        permanent: false
+      }
+    }
+  }
+
+  return {
+    props:{ }
+  }
+
 }
 
 export default RegisterPage

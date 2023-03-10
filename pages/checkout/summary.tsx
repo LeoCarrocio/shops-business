@@ -1,16 +1,28 @@
 import NextLink from 'next/link';
+import React, { useContext, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { CartContext } from '../../context';
 import { ShopLayout } from '../../components/layout';
 import {CartList, OrderSummary} from '../../components/cart'
 import { Box, Typography, Grid, Card, CardContent, Divider, Button, Link} from '@mui/material';
-import { CartContext } from '../../context';
-import React, { useContext } from 'react'
 import { countries } from '../../utils';
+import Cookies from 'js-cookie';
 
 
-const summaryPage = () => {
+const SummaryPage = () => {
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const router = useRouter();
+
   const {shippinAddress,  numberOfItems} = useContext(CartContext)
+
+  useEffect(()=>{
+    if(!Cookies.get('firstName')){
+      router.push('/checkout/address')
+    }
+
+  },[router])
+
+
 
   if(!shippinAddress){
     return <> </>
@@ -45,7 +57,8 @@ const summaryPage = () => {
                 address2 && <Typography>{address2}</Typography>
               }
               <Typography>{city}</Typography>
-              <Typography>{countries.find(coun => coun.code === country )?.name}</Typography> 
+              {/* <Typography>{countries.find(coun => coun.code === country )?.name}</Typography>  */}
+              <Typography>{country}</Typography>  
               <Typography>{phone}</Typography> 
 
               <Divider sx={{my:1}}/>
@@ -77,4 +90,4 @@ const summaryPage = () => {
   )
 }
 
-export default summaryPage
+export default SummaryPage; 

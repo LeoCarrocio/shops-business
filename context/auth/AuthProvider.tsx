@@ -5,6 +5,7 @@ import { IUser } from '../../interfaces';
 import { tesloApi } from '../../api';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import { useSession, signOut } from 'next-auth/react';
 
 interface Props { 
   children: ReactNode
@@ -27,13 +28,27 @@ const AUTH_INITIAL_STATE : AuthState = {
 export const AuthProvider:FC<Props> = ({children}) =>{
 
   const [state, dispatch] = useReducer( authReducer, AUTH_INITIAL_STATE );
+
+  const { data, status} = useSession(); 
+
   const router = useRouter();
 
 
-  useEffect(()=>{
-    checkToken();
 
-  },[])
+  useEffect(()=>{  
+    if(status === 'authenticated'){
+      dispatch({ type:'[Auth] - Login', payload : data.user as IUser })
+    }
+
+    console.log('state user =>',{status},{data},{state})
+
+  },[status, data]); 
+
+// se comenta xq vamos a utilizar el useSeccion de Next, esta aut es propia hecha por nosotros 
+  // useEffect(()=>{  
+  //   checkToken();
+
+  // },[])
 
 
 
@@ -52,12 +67,8 @@ export const AuthProvider:FC<Props> = ({children}) =>{
 
     } catch (error) {
       Cookie.remove('token');
-
     }
   }
-
-
-
 
 
   const loginUser = async ( email:string, password:string): Promise<boolean> =>{
@@ -108,10 +119,21 @@ export const AuthProvider:FC<Props> = ({children}) =>{
 
   const logout = () =>{
 
-    Cookie.remove('token');
     Cookie.remove('cart');
 
-    router.reload(); // refreso la pagina y pierdo mi token y carrito 
+    Cookie.remove('firstName');
+    Cookie.remove('lastName');
+    Cookie.remove('address');
+    Cookie.remove('address2');
+    Cookie.remove('zip');
+    Cookie.remove('city');
+    Cookie.remove('country');
+    Cookie.remove('phone');
+
+    signOut();
+    
+    // Cookie.remove('token');
+    // router.reload(); // refreso la pagina y pierdo mi token y carrito 
 
   }
 
