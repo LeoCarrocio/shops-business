@@ -22,6 +22,7 @@ interface ProductPageProps{
  
 const ProductPage:NextPage<ProductPageProps> = ({product}) => {
 
+
   // Esta es una forma de hacerlo q no seria la mas optima, ya q llmaria muchas veses x cada producto al back
   // y no estariamos aprovechando las vondades de next, y el promebla q google crom no lee esto y no tenemos el seo para los motores de google  (VIDEO 225)
   // const router = useRouter();
@@ -36,9 +37,9 @@ const ProductPage:NextPage<ProductPageProps> = ({product}) => {
 
   const [tempCartProduct, setTempCartProduct] = useState<ICartProduct>({
     _id: product._id,
-    images: product.images[0],
+    image: product.images[0],
     price: product.price,
-    sizes: undefined,
+    size: undefined,
     slug: product.slug,
     title: product.title,
     gender:product.gender,
@@ -49,7 +50,7 @@ const ProductPage:NextPage<ProductPageProps> = ({product}) => {
 
     setTempCartProduct(currentProduct =>({
       ...currentProduct,
-      sizes: size,
+      size: size,
     }))
   }
 
@@ -61,11 +62,9 @@ const ProductPage:NextPage<ProductPageProps> = ({product}) => {
     }))
   }
 
-  
-
   const onAddProduct = () =>{
 
-    if(!tempCartProduct.sizes) { return; }
+    if(!tempCartProduct.size) { return; }
 
     // llama a accion del context para agregar al carrito 
 
@@ -106,7 +105,7 @@ const ProductPage:NextPage<ProductPageProps> = ({product}) => {
               />
               
               <SizeSelectors 
-                selectedSize={tempCartProduct.sizes}
+                selectedSize={tempCartProduct.size}
                 sizes={product.sizes} 
                 onSelectedSize={ selectedSize } 
               />
@@ -122,7 +121,7 @@ const ProductPage:NextPage<ProductPageProps> = ({product}) => {
                   onClick={onAddProduct}  
                 >
                   {
-                    tempCartProduct.sizes 
+                    tempCartProduct.size
                     ? 'Agregar al carrito' : 'Seleccione una talla' 
                   } 
                 </Button> 

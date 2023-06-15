@@ -1,19 +1,23 @@
 import NextLink from 'next/link';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { CartContext } from '../../context';
 import { ShopLayout } from '../../components/layout';
 import {CartList, OrderSummary} from '../../components/cart'
-import { Box, Typography, Grid, Card, CardContent, Divider, Button, Link} from '@mui/material';
+import { Box, Typography, Grid, Card, CardContent, Divider, Button, Link, Chip} from '@mui/material';
 import { countries } from '../../utils';
 import Cookies from 'js-cookie';
+import { truncate } from 'fs';
 
 
 const SummaryPage = () => {
 
   const router = useRouter();
 
-  const {shippinAddress,  numberOfItems} = useContext(CartContext)
+  const {shippinAddress,  numberOfItems, creatOrder} = useContext(CartContext);
+  const [isPosting , setIsPosting] = useState<boolean>(false);
+  const [errorMessage , setErrorMessage] = useState<string>('');
+
 
   useEffect(()=>{
     if(!Cookies.get('firstName')){
@@ -21,6 +25,20 @@ const SummaryPage = () => {
     }
 
   },[router])
+
+  const onCreatedOrder = async () => {
+    setIsPosting(true);
+    const {hasError, message}= await creatOrder();
+
+    if(hasError) {
+      setErrorMessage(message);
+      setIsPosting(false);
+      return; 
+    }
+
+    router.replace(`/order/${message}`);
+
+  }
 
 
 
@@ -71,11 +89,20 @@ const SummaryPage = () => {
             
               <OrderSummary/>
               
-              <Box sx={{mt:3}}>
-                <Button color="secondary" className='circular-btn' fullWidth>
+              <Box sx={{mt:3}} display='flex' flexDirection='column'>
+                <Button color="secondary" 
+                  className='circular-btn' 
+                  fullWidth 
+                  onClick={()=> onCreatedOrder() }
+                  disabled={isPosting}
+                >
                   Confirmar orden
                 </Button>
-
+                <Chip
+                  color='error'
+                  label={errorMessage}
+                  sx={{display: errorMessage ? 'flex' : 'none', mt:2}}
+                />
               </Box>
 
             </CardContent>

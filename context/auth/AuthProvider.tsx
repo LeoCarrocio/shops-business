@@ -40,8 +40,6 @@ export const AuthProvider:FC<Props> = ({children}) =>{
       dispatch({ type:'[Auth] - Login', payload : data.user as IUser })
     }
 
-    console.log('state user =>',{status},{data},{state})
-
   },[status, data]); 
 
 // se comenta xq vamos a utilizar el useSeccion de Next, esta aut es propia hecha por nosotros 

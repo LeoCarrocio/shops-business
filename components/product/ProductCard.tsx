@@ -15,7 +15,7 @@ export const ProductCard:FC<ProductCardProps> = ({product}) => {
 
   const ProductImage = useMemo(() =>{
     return isHovered ? `/products/${product.images[0]}`: `/products/${product.images[1]}`
-  },[isHovered, product.images])
+  },[isHovered, product])
 
   return (
     <Grid item xs={6} sm={4} 

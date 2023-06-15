@@ -16,7 +16,7 @@ export const SizeSelectors:FC<SizeSelectorsProps> = ({selectedSize , sizes, onSe
   return (
     <Box>
       {
-        sizes.map( size =>(
+        sizes && sizes.map( size =>(
           <Button 
             key={ size }
             size="small" 

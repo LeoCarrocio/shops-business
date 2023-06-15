@@ -88,8 +88,8 @@ export default NextAuth({
         
     async session({session, token, user}){
             
+      session.user = token.user! as any;
       session.accessToken = token.accessToken;
-      session.user = token.user as any;
             
       return session;
     }

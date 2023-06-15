@@ -5,12 +5,20 @@ import { currency } from '../../utils';
 
 
 interface OrderSummaryProps {
+  orderValues ?:{
+    numberOfItems : number, 
+    subTotal : number, 
+    tax : number, 
+    total : number
+  }
 
 }
 
-export const OrderSummary:FC<OrderSummaryProps> = ({}) => {
+export const OrderSummary:FC<OrderSummaryProps> = ({orderValues}) => {
 
   const { numberOfItems, subTotal, tax, total} = useContext(CartContext);
+
+  const summaryValues = orderValues ? orderValues : { numberOfItems, subTotal, tax, total};
 
 
   return (
@@ -19,28 +27,28 @@ export const OrderSummary:FC<OrderSummaryProps> = ({}) => {
         <Typography>No. productos </Typography>
       </Grid>
       <Grid item xs={6} display='flex' justifyContent='end'>
-        <Typography>{numberOfItems} {numberOfItems > 1 ? 'productos':' producto'}</Typography>
+        <Typography>{summaryValues.numberOfItems} {summaryValues.numberOfItems > 1 ? 'productos':' producto'}</Typography>
       </Grid>
 
       <Grid item xs={6}>
         <Typography>Sub Total </Typography>
       </Grid>
       <Grid item xs={6} display='flex' justifyContent='end'>
-        <Typography>{currency.format(subTotal)}</Typography>
+        <Typography>{currency.format(summaryValues.subTotal)}</Typography>
       </Grid>
 
       <Grid item xs={6}>
         <Typography>Impuestos { Number(process.env.NEXT_PUBLIC_TAX_RATE) * 100 } %</Typography>
       </Grid>
       <Grid item xs={6} display='flex' justifyContent='end'>
-        <Typography>{ currency.format(tax) }</Typography>
+        <Typography>{ currency.format(summaryValues.tax) }</Typography>
       </Grid>
 
       <Grid item xs={6} sx={{mt:2}}>
         <Typography variant='subtitle1'>TOTAL </Typography>
       </Grid>
       <Grid item xs={6} display='flex' justifyContent='end' sx={{mt:2}}>
-        <Typography variant='subtitle1'>{ currency.format(total) }</Typography>
+        <Typography variant='subtitle1'>{ currency.format(summaryValues.total) }</Typography>
       </Grid>
 
 

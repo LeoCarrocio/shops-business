@@ -1,8 +1,10 @@
 import {FC, useReducer,ReactNode, useEffect } from 'react';
 import Cookie from 'js-cookie';
 import { CartContext, cartReducer } from './';
-import { ICartProduct } from '../../interfaces';
+import { ICartProduct, IOrder, ShippingAddres } from '../../interfaces';
 import Cookies from 'js-cookie';
+import tesloApi from '../../api/tesloApi';
+import axios from 'axios';
 
 interface Props { 
   children: ReactNode
@@ -17,17 +19,6 @@ export interface CartState {
   total: number;
 
   shippinAddress?: ShippingAddres;
-}
-
-export interface ShippingAddres {
-  firstName: string;
-  lastName: string;
-  address: string;
-  address2? : string;
-  zip: string;
-  city: string;
-  country: string;
-  phone: string;
 }
 
 const CART_INITIAL_STATE : CartState = {
@@ -93,7 +84,7 @@ useEffect(()=>{
 
     const numberOfItems = state.cart.reduce((prev, current)=>current.quantity + prev, 0 );
     const subTotal = state.cart.reduce((prev, current)=> (current.quantity * current.price) + prev, 0 );
-    const taxRate = Number(process.env.NEXT_PUBLIC_TAX_RATE || 0);
+    const taxRate = Number(process.env.NEXT_PUBLIC_TAX_RATE || 1);
 
     const orderSummary = {
       numberOfItems,
@@ -116,14 +107,14 @@ useEffect(()=>{
     if(!productInCart) return dispatch({ type:'[Cart] - Update products in cart' , payload: [...state.cart, product]}); // si no exixte entra y se guarda xq esta negado
 
     // aca averiguo si existe el producto y tambien la talla 
-    const productInCartButDifferentSize = state.cart.some(p => p._id === product._id && p.sizes === product.sizes);
+    const productInCartButDifferentSize = state.cart.some(p => p._id === product._id && p.size === product.size);
     if(!productInCartButDifferentSize) return dispatch({ type:'[Cart] - Update products in cart' , payload: [...state.cart, product]}); // exite el producto pero diferente talla entonses no tengo q acumular 
 
     // acumular
 
     const updatedProducts = state.cart.map( p =>{
       if(p._id !== product._id) return p;
-      if(p.sizes !== product.sizes) return p;
+      if(p.size !== product.size) return p;
 
       p.quantity += product.quantity
 
@@ -156,6 +147,52 @@ useEffect(()=>{
     dispatch({type:'[Cart] - Update Addres' ,payload: data})
   }
 
+  const creatOrder = async (): Promise<{hasError: boolean; message: string}> => {
+
+    if( !state.shippinAddress ){
+      throw new Error('No hay direecion de entrega');
+    }
+
+    const body : IOrder = {
+      orderItems: state.cart.map(p => ({
+        ...p,
+        image: p.image!,
+        size: p.size!
+      })),
+      shippingAddres: state.shippinAddress,
+      numberOfOrderItems: state.numberOfItems,
+      subTotal: state.subTotal,
+      tax: state.tax,
+      total: state.total,
+      isPaid: false,
+    }
+
+    try {
+      const {data} = await tesloApi.post<IOrder>('/orders', body)
+
+      dispatch({type:'[Cart] - Order Complete'});
+
+      return {
+        hasError:false,
+        message:data._id!
+      }
+
+    } catch (error) {
+      // si es un error de axios 
+      if(axios.isAxiosError(error)) {
+        return{
+          hasError:true,
+          message:error.response?.data.message
+        }
+      }
+      return{
+        hasError:true,
+        message:'Error no controlado, hable ocn el administrador'
+      }
+
+    }
+  }
+
 
   return (
     <CartContext.Provider value={{
@@ -165,6 +202,8 @@ useEffect(()=>{
       updateCartQuantity,
       removeCardProduct,
       updateAddres,
+      //Orders
+      creatOrder,
     }
     } >
     {children}
