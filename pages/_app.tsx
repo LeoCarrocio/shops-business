@@ -5,6 +5,8 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { lightTheme } from '../themes';
 import { SWRConfig } from 'swr'
 import { AuthProvider, CartProvider, UiProvider } from '../context';
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+
 
 
 
@@ -12,12 +14,14 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
 
     <SessionProvider>
+    <PayPalScriptProvider options={{ clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || '' }}>
+
     <SWRConfig 
       value={{
-      //refreshInterval: 3000, hace pedidos cada 3000, solo refrescala data si hay un dato cambiado 
-      fetcher: (resource, init) => fetch(resource, init).then(res => res.json())
-    }}
-    >
+        //refreshInterval: 3000, hace pedidos cada 3000, solo refrescala data si hay un dato cambiado 
+        fetcher: (resource, init) => fetch(resource, init).then(res => res.json())
+      }}
+      >
       <AuthProvider>
         <CartProvider>
           <UiProvider>
@@ -29,6 +33,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         </CartProvider>
       </AuthProvider>
     </SWRConfig>
+    </PayPalScriptProvider>
     </SessionProvider>
   )
 }
