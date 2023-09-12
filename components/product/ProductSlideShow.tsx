@@ -4,8 +4,6 @@ import styles from './ProductSlideShow.module.css';
 
 import 'react-slideshow-image/dist/styles.css'; // este estilo tambien puede estar en el globals stiles 
 
-
-
 interface ProductSlideShowProps{
   images: string[];
 }
@@ -19,11 +17,11 @@ export const ProductSlideShow:FC<ProductSlideShowProps> = ({images}) => {
     >
       {
         images.map(image => {
-          const url = `/products/${image}`;
+          
           return(
             <div className={styles['each-slide']} key={image}>
               <div style={{ 
-                    backgroundImage: `url(${url})`,
+                    backgroundImage: `url(${image})`,
                     backgroundSize:'cover'
                   }}
               >

@@ -146,13 +146,15 @@ const OrderPage: NextPage<Props> = ({order}) => {
                           } );
                         }}
                         onApprove={(data, actions) => {
-                          return actions.order!.capture().then((details) => {
-                              onOrderCompleted(details)
+                          return actions.order!.capture().then((details: any) => {
+                              onOrderCompleted(details);
                               //console.log({details})
                               //const name = details.payer.name.given_name;
                               //alert(`Transaction completed by ${name}`);
-                            });
-                          }}
+                            }
+                          );
+                          }
+                        }
                         />
                     ) 
                   }

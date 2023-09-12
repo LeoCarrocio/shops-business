@@ -32,7 +32,14 @@ const getProducts = async (req: NextApiRequest, res: NextApiResponse<Data>) =>{
                                 .lean();
   await db.disconnect()
 
-  return res.status(200).json(products);
+  const updatedProducts = products.map( prod => {
+    prod.images = prod.images.map( image => {
+        return image.includes('http') ? image : `${ process.env.HOST_NAME}products/${ image }`
+    });
+    return prod;
+})
+
+  return res.status(200).json(updatedProducts);
 
 }
 

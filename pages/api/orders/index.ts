@@ -3,6 +3,7 @@ import { IOrder } from '../../../interfaces/order';
 import { getSession } from 'next-auth/react';
 import { db } from '../../../database';
 import { Product, Order } from '../../../model';
+import { User } from "../../../model";
 
 type Data = { message: string } | IOrder
 
@@ -22,13 +23,10 @@ export default function handler(
 }
 
 
-
 const createOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
   const {orderItems, total } = req.body  as IOrder;
 
-
-  
   try {
   // vericamos q tengamos un usuario 
   const session = await getSession({ req });
@@ -39,6 +37,7 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
   // hago la sumatoria de los precios de los productos, los tenog q ir a buscar ala db xq no se confia en el front 
   const productsIds = orderItems.map(product => product._id);
+  await db.connect();
 
   const dbProducts= await Product.find({_id:{$in: productsIds}})
 
@@ -58,18 +57,26 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     }
 
     // hasta aca todo esta bien, al llegar a este punto 
-    const userId = session.user._id! ;
+
+
+    
+    let mailUser = session.user!.email
+    const userIdDb =  await User.findOne({ mailUser });
+
+    console.log('userIdDb----------------------------',userIdDb,'session--------',session)
+
+
+    const userId = session.user!.id   ; //como el ssecion user no tenia el id del usuario relize un cambio e ir a buscarlo 
     const newOrder = new Order({...req.body, isPaid :false, user: userId})
     newOrder.total = Math.round(newOrder.total * 100)/100 ;
 
     await newOrder.save(); 
 
-    db.connect();
-
-    res.status(201).json(newOrder);
+    db.disconnect();
+    return res.status(201).json(newOrder);
     
   } catch (error:any) {
-      db.connect(); 
+      db.disconnect();
       console.log(error);
       return res.status(400).json({
         message: error.message || 'Revise logs del servidor'
@@ -77,14 +84,6 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
   }
   
-  db.disconnect();
-
-
-
-
-
-
-
 
   return res.status(201).json({message: 'ok '})
 }
